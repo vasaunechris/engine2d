@@ -1,4 +1,4 @@
-package ground.application;
+package com.sochris.engine2d.application;
 
 import java.lang.Exception;
 

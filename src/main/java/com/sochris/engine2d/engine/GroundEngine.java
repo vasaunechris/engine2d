@@ -1,4 +1,4 @@
-package ground.engine;
+package com.sochris.engine2d.engine;
 
 public class GroundEngine {
 
