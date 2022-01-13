@@ -11,10 +11,6 @@ public class GraphicsInterface implements Runnable {
         game.start();
     }
 
-    public GraphicsInterface() {
-        
-    }
-
     private void onInit(){
         System.out.println("Initialisation Game");
     }
