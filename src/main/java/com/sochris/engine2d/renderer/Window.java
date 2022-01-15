@@ -17,6 +17,8 @@ public class Window {
 
     private long glfwWindow;
     private static Window window = null;
+    public int frames;
+    public static long time;
 
     public Window() {
         
@@ -85,15 +87,32 @@ public class Window {
 
 		// Make the window visible
 		glfwShowWindow(glfwWindow);
+
+        // This line is critical for LWJGL's interoperation with GLFW's
+		// OpenGL context, or any context that is managed externally.
+		// LWJGL detects the context that is current in the current thread,
+		// creates the GLCapabilities instance and makes the OpenGL
+		// bindings available for use.
+		GL.createCapabilities();
+
+		// Set the clear color
+		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
     }
 
     public void update(){
         // Poll for window events. The key callback above will only be
         // invoked during this call.
         glfwPollEvents();
+        frames++;
+        if(System.currentTimeMillis() > time + 1000){
+            GLFW.glfwSetWindowTitle(glfwWindow, "GAME  | FPS : " + frames);
+            time = System.currentTimeMillis();
+            frames = 0;
+        }
     }
 
     public void swapBuffers(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         glfwSwapBuffers(glfwWindow); // swap the color buffers
     }
 

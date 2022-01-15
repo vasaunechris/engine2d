@@ -4,7 +4,6 @@ package com.sochris.engine2d.renderer;
 public class GraphicsInterface implements Runnable {
 
     public Thread game;
-    private boolean isRunning = true;
     public static Window window;
     public static final int WIDTH = 300, HEIGHT = 300;
 
@@ -21,7 +20,6 @@ public class GraphicsInterface implements Runnable {
 
     private void onQuit(){
         System.out.println("Quitting Game");
-        this.isRunning = false;
     }
 
     @Override
