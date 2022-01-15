@@ -1,7 +1,7 @@
 package com.sochris.engine2d.renderer;
 
 
-public class GraphicsInterface implements Runnable {
+public class GraphicalEngine implements Runnable {
 
     public Thread game;
     public static Window window;
