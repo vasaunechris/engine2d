@@ -5,6 +5,8 @@ public class GraphicsInterface implements Runnable {
 
     public Thread game;
     private boolean isRunning = true;
+    public static Window window;
+    public static final int WIDTH = 300, HEIGHT = 300;
 
     public void start(){
         this.game = new Thread(this,"game");
@@ -13,9 +15,12 @@ public class GraphicsInterface implements Runnable {
 
     private void onInit(){
         System.out.println("Initialisation Game");
+        window = new Window();
+        window.init(WIDTH, HEIGHT);
     }
 
     private void onQuit(){
+        System.out.println("Quitting Game");
         this.isRunning = false;
     }
 
@@ -23,7 +28,7 @@ public class GraphicsInterface implements Runnable {
     public void run() {
 
         onInit();
-        while(isRunning){
+        while(!window.shouldClose()){
             update();
             render();
         }
@@ -33,11 +38,12 @@ public class GraphicsInterface implements Runnable {
 
     private void update(){
         System.out.println("Updating Game");
+        window.update();
     }
 
     private void render(){
         System.out.println("rending Game");
-
+        window.swapBuffers();
     }
     
 }
