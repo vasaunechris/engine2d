@@ -8,6 +8,7 @@ import org.lwjgl.system.*;
 import java.nio.*;
 
 import com.sochris.engine2d.listener.*;
+import com.sochris.engine2d.util.Time;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -18,9 +19,14 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Window {
 
     private long glfwWindow;
-    private static Window window = null;
     public int frames;
     public static long time;
+    private static Window window = null;
+    float beginTime;
+    float endTime;
+    float dt = -1.0f;
+    private static Scene currentScene;
+    public float r = 1.0f,g = 1.0f,b = 1.0f,a = 1.0f;
 
     public Window() throws Exception{
         if(Window.window == null){
@@ -32,6 +38,21 @@ public class Window {
 
     public static Window get(){
         return Window.window;
+    }
+
+    public static void changeScene(int newScene){
+        switch(newScene){
+            case 0:
+                currentScene = new LevelEditorScene();
+                currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                currentScene.init();
+                break;
+            default:
+                assert false : "Unknown scene '" + newScene + "'";
+        }
     }
 
     public void run(){
@@ -106,6 +127,11 @@ public class Window {
 
 		// Set the clear color
 		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+
+        Window.changeScene(0);
+
+        float beginTime = Time.getTime();
+        float endTime;
     }
 
     public void update(){
@@ -121,8 +147,18 @@ public class Window {
     }
 
     public void swapBuffers(){
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+        if(dt >= 0){
+            currentScene.update(dt);
+        }
+
         glfwSwapBuffers(glfwWindow); // swap the color buffers
+
+        endTime = Time.getTime();
+        dt = endTime - beginTime;
+        beginTime = endTime;
     }
 
     public boolean shouldClose(){
