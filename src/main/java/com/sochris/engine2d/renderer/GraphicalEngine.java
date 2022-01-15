@@ -1,10 +1,13 @@
 package com.sochris.engine2d.renderer;
 
+import com.sochris.engine2d.util.Time;
 
 public class GraphicalEngine implements Runnable {
 
     public Thread game;
     public static Window window;
+    float beginTime;
+    float endTime;
     public static final int WIDTH = 300, HEIGHT = 300;
 
     public void start(){
@@ -19,7 +22,9 @@ public class GraphicalEngine implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        window.init(WIDTH, HEIGHT);
+        window.init(WIDTH, HEIGHT, "GAME");
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
     }
 
     private void onQuit(){
@@ -34,18 +39,21 @@ public class GraphicalEngine implements Runnable {
         while(!window.shouldClose()){
             update();
             render();
+            endTime = Time.getTime();
+            float dt = endTime - beginTime;
+            beginTime = endTime;
         }
         onQuit();
         
     }
 
     private void update(){
-        System.out.println("Updating Game");
+        //System.out.println("Updating Game");
         window.update();
     }
 
     private void render(){
-        System.out.println("rending Game");
+        //System.out.println("rending Game");
         window.swapBuffers();
     }
     

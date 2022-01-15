@@ -7,6 +7,8 @@ import org.lwjgl.system.*;
 
 import java.nio.*;
 
+import com.sochris.engine2d.listener.*;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -36,7 +38,7 @@ public class Window {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
     }
 
-    public void init(int width, int height){
+    public void init(int width, int height, String title){
         // Setup an error callback. The default implementation
 		// will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
@@ -50,9 +52,10 @@ public class Window {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
         // Create the window
-		glfwWindow = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+		glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
 		if ( glfwWindow == NULL ){
 			throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -80,6 +83,11 @@ public class Window {
 				(vidmode.height() - pHeight.get(0)) / 2
 			);
 		} // the stack frame is popped automatically
+
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
         // Make the OpenGL context current
 		glfwMakeContextCurrent(glfwWindow);
