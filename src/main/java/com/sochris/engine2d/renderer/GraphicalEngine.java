@@ -12,14 +12,19 @@ public class GraphicalEngine implements Runnable {
         game.start();
     }
 
-    private void onInit(){
+    private void onInit() {
         System.out.println("Initialisation Game");
-        window = new Window();
+        try {
+            window = new Window();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         window.init(WIDTH, HEIGHT);
     }
 
     private void onQuit(){
         System.out.println("Quitting Game");
+        window.quit();
     }
 
     @Override

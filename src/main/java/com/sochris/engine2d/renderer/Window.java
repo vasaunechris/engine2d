@@ -20,14 +20,15 @@ public class Window {
     public int frames;
     public static long time;
 
-    public Window() {
-        
+    public Window() throws Exception{
+        if(Window.window == null){
+            Window.window = this;
+        }else{
+            throw new Exception("Application déjà crée");
+        }
     }
 
     public static Window get(){
-        if(Window.window == null){
-            Window.window = new Window();
-        }
         return Window.window;
     }
 
@@ -48,7 +49,7 @@ public class Window {
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-		//glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
 		glfwWindow = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
@@ -119,5 +120,14 @@ public class Window {
     public boolean shouldClose(){
         return glfwWindowShouldClose(glfwWindow);
     }
-    
+
+    public void quit(){
+        // Free the window callbacks and destroy the window
+		glfwFreeCallbacks(glfwWindow);
+		glfwDestroyWindow(glfwWindow);
+
+		// Terminate GLFW and free the error callback
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
+    }    
 }
