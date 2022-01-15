@@ -121,7 +121,7 @@ public class Window {
         return glfwWindowShouldClose(glfwWindow);
     }
 
-    public void quit(){
+    public void freeMemory(){
         // Free the window callbacks and destroy the window
 		glfwFreeCallbacks(glfwWindow);
 		glfwDestroyWindow(glfwWindow);

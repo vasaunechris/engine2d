@@ -24,7 +24,7 @@ public class GraphicalEngine implements Runnable {
 
     private void onQuit(){
         System.out.println("Quitting Game");
-        window.quit();
+        window.freeMemory();
     }
 
     @Override
