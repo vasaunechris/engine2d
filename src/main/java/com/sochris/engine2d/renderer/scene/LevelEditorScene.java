@@ -4,11 +4,14 @@ import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import org.joml.Vector2f;
+
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.BufferUtils;
 
 import com.sochris.engine2d.listener.KeyListener;
 import com.sochris.engine2d.renderer.Window;
+import com.sochris.engine2d.renderer.camera.Camera;
 import com.sochris.engine2d.renderer.shader.Shader;
 
 public class LevelEditorScene extends Scene {
@@ -19,10 +22,10 @@ public class LevelEditorScene extends Scene {
 
     private float[] vertexArray = {
         // position               // color
-         0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
-        -0.5f,  0.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
-         0.5f,  0.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
-        -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+        100.5f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
+        0.5f,  100.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
+        100.5f,  100.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
+        0.5f, 0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
     };
 
     // IMPORTANT: Must be in counter-clockwise order
@@ -46,6 +49,7 @@ public class LevelEditorScene extends Scene {
     @Override
     public void init(){
 
+        this.camera = new Camera(new Vector2f(-200, -300));
         defaultShader = new Shader("src/main/java/com/sochris/engine2d/ressources/default.glsl");
         defaultShader.compile();
         
@@ -101,8 +105,13 @@ public class LevelEditorScene extends Scene {
             Window.changeScene(1);
         }
 
+        camera.position.x -= dt * 50.0f;
+        camera.position.y -= dt * 20.0f;
+
         // Bind shader program
         defaultShader.use();
+        defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        defaultShader.uploadMat4f("uView", camera.getViewMatrix());
         // Bind the VAO that we're using
         glBindVertexArray(vaoID);
 
