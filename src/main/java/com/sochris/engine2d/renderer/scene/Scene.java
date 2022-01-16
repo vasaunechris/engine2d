@@ -1,4 +1,4 @@
-package com.sochris.engine2d.renderer;
+package com.sochris.engine2d.renderer.scene;
 
 public abstract class Scene {
 

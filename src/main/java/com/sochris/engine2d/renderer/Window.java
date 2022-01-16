@@ -8,6 +8,9 @@ import org.lwjgl.system.*;
 import java.nio.*;
 
 import com.sochris.engine2d.listener.*;
+import com.sochris.engine2d.renderer.scene.LevelEditorScene;
+import com.sochris.engine2d.renderer.scene.LevelScene;
+import com.sochris.engine2d.renderer.scene.Scene;
 import com.sochris.engine2d.util.Time;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -130,8 +133,7 @@ public class Window {
 
         Window.changeScene(0);
 
-        float beginTime = Time.getTime();
-        float endTime;
+        beginTime = Time.getTime();
     }
 
     public void update(){

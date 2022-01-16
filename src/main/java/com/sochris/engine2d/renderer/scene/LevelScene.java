@@ -1,4 +1,6 @@
-package com.sochris.engine2d.renderer;
+package com.sochris.engine2d.renderer.scene;
+
+import com.sochris.engine2d.renderer.Window;
 
 public class LevelScene extends Scene {
 
@@ -11,7 +13,6 @@ public class LevelScene extends Scene {
 
     @Override
     public void update(float dt) {
-        // TODO Auto-generated method stub
         
     }
     
