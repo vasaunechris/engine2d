@@ -13,6 +13,8 @@ import com.sochris.engine2d.listener.KeyListener;
 import com.sochris.engine2d.renderer.Window;
 import com.sochris.engine2d.renderer.camera.Camera;
 import com.sochris.engine2d.renderer.shader.Shader;
+import com.sochris.engine2d.renderer.shader.Texture;
+import com.sochris.engine2d.util.Time;
 
 public class LevelEditorScene extends Scene {
 
@@ -21,11 +23,11 @@ public class LevelEditorScene extends Scene {
     private Shader defaultShader;
 
     private float[] vertexArray = {
-        // position               // color
-        100.5f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
-        0.5f,  100.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
-        100.5f,  100.5f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f, // Top right    2
-        0.5f, 0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+        // position               // color                  // UV Coordinates
+        100f,   0f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f,     1, 1, // Bottom right 0
+          0f, 100f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f,     0, 0, // Top left     1
+        100f, 100f, 0.0f ,      1.0f, 0.0f, 1.0f, 1.0f,     1, 0, // Top right    2
+          0f,   0f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f,     0, 1  // Bottom left  3
     };
 
     // IMPORTANT: Must be in counter-clockwise order
@@ -41,6 +43,7 @@ public class LevelEditorScene extends Scene {
     };
 
     private int vaoID, vboID, eboID;
+    private Texture testTexture;
 
     public LevelEditorScene() {
         
@@ -49,9 +52,10 @@ public class LevelEditorScene extends Scene {
     @Override
     public void init(){
 
-        this.camera = new Camera(new Vector2f(-200, -300));
-        defaultShader = new Shader("src/main/java/com/sochris/engine2d/ressources/default.glsl");
+        this.camera = new Camera(new Vector2f(0, 0));
+        defaultShader = new Shader("src/main/java/com/sochris/engine2d/ressources/shader/default.glsl");
         defaultShader.compile();
+        this.testTexture = new Texture("src/main/java/assets/testImage.png");
         
         // ============================================================
         // Generate VAO, VBO, and EBO buffer objects, and send to GPU
@@ -79,39 +83,38 @@ public class LevelEditorScene extends Scene {
         // Add the vertex attribute pointers
         int positionsSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = 4;
-        int vertexSizeBytes = (positionsSize + colorSize) * floatSizeBytes;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
         glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
 
     }
 
     @Override
     public void update(float dt) {
 
-        if(!changingScene && KeyListener.isKeyPressed(KeyEvent.VK_SPACE)){
-            changingScene = true;
-        }
-
-        if(changingScene && timeToChangeScene > 0){
-            timeToChangeScene -= dt; 
-            Window.get().r -= dt * 5.0f;
-            Window.get().g -= dt * 5.0f;
-            Window.get().b -= dt * 5.0f;
-        }else if(changingScene){
-            Window.changeScene(1);
-        }
+        
 
         camera.position.x -= dt * 50.0f;
         camera.position.y -= dt * 20.0f;
+
+        defaultShader.use();
+
+        // Upload texture to shader
+        defaultShader.uploadTexture("TEX_SAMPLER", 0);
+        glActiveTexture(GL_TEXTURE0);
+        testTexture.bind();
 
         // Bind shader program
         defaultShader.use();
         defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uView", camera.getViewMatrix());
+        defaultShader.uploadFloat("uTime", Time.getTime());
         // Bind the VAO that we're using
         glBindVertexArray(vaoID);
 
